@@ -1,0 +1,78 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1 class="text-center">Chushkopek</h1>
+<hr class="hr-2 bg-dark" />
+<div class="product-type-holder half-width mx-auto d-flex justify-content-between">
+    <h3 class="text-center">Type: @Model.Type.GetDisplayName()</h3>
+    <h3 class="text-center">Price: $@Model.Price</h3>
+</div>
+<hr class="hr-2 bg-dark" />
+<h3 class="text-center">Description</h3>
+<div class="product-description-holder">
+    <p class="text-center mt-4">
+        @Model.Description
+    </p>
+</div>
+<hr class="hr-2 bg-dark" />
+<h3 class="text-center">Actions</h3>
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    if (user != null)
+    {
+        var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+        if (isAdmin)
+        {
+            <div class="product-action-holder mt-4 half-width mx-auto d-flex justify-content-around">
+                <button class="btn chushka-bg-color" id="create-order">Order</button>
+                <a class="btn chushka-bg-color" href="/products/edit/@Model.Id">Edit</a>
+                <a class="btn chushka-bg-color" href="/products/delete/@Model.Id">Delete</a>
+            </div>
+        }
+        else
+        {
+            <div class="product-action-holder mt-4 d-flex justify-content-around">
+                <button class="btn chushka-bg-color" id="create-order">Order</button>
+            </div>
+        }
+    }
+}
+
+<script>
+    $('#create-order').click(function () {
+
+        var covm = { 
+            ProductId : @Model.Id, 
+        };
+
+        $.ajax({ 
+            type: 'POST',
+            url: '/Orders/Create',
+            data: JSON.stringify(covm),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                console.log(data["message"])
+
+                if (data["message"] == "success") {
+                    window.location.replace("/Home/Index");
+                }
+                else if (data["message"] == "go2order") {
+                    window.location.replace("/Orders/Index");
+                }
+                else {
+                    console.log("nothing")
+                }
+            },
+            error: function () {
+                console.log("Error")
+            }
+        });
+
+    });
+</script>
+

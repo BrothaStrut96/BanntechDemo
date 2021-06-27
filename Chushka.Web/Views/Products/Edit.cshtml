@@ -1,0 +1,77 @@
+﻿@model EditProductViewModel
+@using Chuska.Shared.Models.Enums
+@using Chushka.Web.Helpers
+@{
+    ViewData["Title"] = "Product Editor";
+}
+
+<h1 class="text-center">Edit Product</h1>
+<hr class="hr-2 bg-dark" />
+
+@using (Html.BeginForm("Edit", "Products", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.Id);
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.Label("Name")
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", id = "name", placeholder = "Name...", name = "name" })
+        @Html.ValidationMessageFor(model => model.Name, string.Empty, new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Price")
+        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", id = "price", placeholder = "0.00", name = "price" })
+        @Html.ValidationMessageFor(model => model.Price, string.Empty, new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Description")
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 4, id = "description", placeholder = "Description...", name = "description" })
+        @Html.ValidationMessageFor(model => model.Description, string.Empty, new { @class = "text-danger" })
+    </div>
+    <h4 class="text-center">Product Type</h4>
+    <hr class="hr-2 bg-dark half-width mt-4" />
+    <div class="product-type-holder mt-4 d-flex justify-content-around">
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                @Html.RadioButtonFor(model => model.Type, ProductType.Food, new { @class = "form-check-input", type = "radio", name = "inlineRadioOptions", id = "inlineRadio1", value = "option1" })
+                @Html.ValidationMessageFor(model => model.Type, string.Empty, new { @class = "text-danger" })
+                @ProductType.Food.GetDisplayName()
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                @Html.RadioButtonFor(model => model.Type, ProductType.Domestic, new { @class = "form-check-input", type = "radio", name = "inlineRadioOptions", id = "inlineRadio1", value = "option1" })
+                @Html.ValidationMessageFor(model => model.Type, string.Empty, new { @class = "text-danger" })
+                @ProductType.Domestic.GetDisplayName()
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                @Html.RadioButtonFor(model => model.Type, ProductType.Health, new { @class = "form-check-input", type = "radio", name = "inlineRadioOptions", id = "inlineRadio1", value = "option1" })
+                @Html.ValidationMessageFor(model => model.Type, string.Empty, new { @class = "text-danger" })
+                @ProductType.Health.GetDisplayName()
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                @Html.RadioButtonFor(model => model.Type, ProductType.Cosmetic, new { @class = "form-check-input", type = "radio", name = "inlineRadioOptions", id = "inlineRadio1", value = "option1" })
+                @Html.ValidationMessageFor(model => model.Type, string.Empty, new { @class = "text-danger" })
+                @ProductType.Cosmetic.GetDisplayName()
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                @Html.RadioButtonFor(model => model.Type, ProductType.Other, new { @class = "form-check-input", type = "radio", name = "inlineRadioOptions", id = "inlineRadio1", value = "option1" })
+                @Html.ValidationMessageFor(model => model.Type, string.Empty, new { @class = "text-danger" })
+                @ProductType.Other.GetDisplayName()
+            </label>
+        </div>
+    </div>
+    <hr class="hr-2 bg-dark half-width mt-4" />
+    <div class="button-holder mt-2 d-flex justify-content-center">
+        <div class="button-holder mt-2 d-flex w-25 mx-auto justify-content-between">
+            <button type="submit" class="btn chushka-bg-color">Edit</button>
+            <a class="btn chushka-bg-color" asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+        </div>
+    </div>
+}

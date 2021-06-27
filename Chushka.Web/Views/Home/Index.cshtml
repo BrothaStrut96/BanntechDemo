@@ -1,0 +1,75 @@
+﻿@model AuthenticatedUserHomePageViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+<div class="container-fluid text-center">
+    <br />
+    <h2>Greetings, @User.Identity.Name!</h2>
+
+    @{
+        var isAdmin = false;
+        var user = await UserManager.GetUserAsync(User); if (user != null)
+        { isAdmin = await UserManager.IsInRoleAsync(user, "Admin"); }
+    }
+
+    @if (isAdmin)
+    {
+        <h4>Enjoy your work today!</h4>
+    }
+    else
+    {
+        <h4>Feel free to view and order any of our products.</h4>
+    }
+
+</div>
+    <hr class="hr-2 bg-dark" />
+    <div class="container-fluid product-holder">
+        @if (Model.Products != null)
+        {
+            if (Model.Products.Count > 0)
+            {
+                int index = 0;
+                int rowcount = 0;
+                @Html.Raw(ProductPageBuilder.GetRowStart())
+                foreach (var product in Model.Products)
+                {
+                    if (rowcount < 4)
+                    {
+                        @Html.Raw(ProductPageBuilder.BuildProductObject(product))
+                        rowcount += 1;
+                    }
+                    else if (rowcount == 4)
+                    {
+                        @Html.Raw(ProductPageBuilder.GetRowEnd())
+                        @Html.Raw(ProductPageBuilder.GetRowStart())
+                        @Html.Raw(ProductPageBuilder.BuildProductObject(product))
+                        rowcount = 0;
+                        rowcount += 1;
+                    }
+                    else
+                    {
+                        @Html.Raw(ProductPageBuilder.GetRowEnd())
+                        rowcount = 0;
+
+                    }
+                    index += 1;
+                }
+            }
+        }
+    </div>
+    <br />
+    <br />
+}
+else
+{
+    <div class="jumbotron mt-3 chushka-bg-color">
+        <h1>Welcome to Chushka Universal Web Shop</h1>
+        <hr class="bg-white" />
+        <h3><a class="nav-link-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a> if you have an account.</h3>
+        <h3><a class="nav-link-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a> if you don't.</h3>
+    </div>
+}
